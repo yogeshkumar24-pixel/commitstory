@@ -27,7 +27,7 @@ export default function Dashboard() {
   const {
     commits, stats, contributors, narratives,
     commitStatus, narrativeStatus, commitError, narrativeError,
-    repoName, analyse, reset,
+    repoName, analyse,
   } = useCommitStory();
 
   // Auto-analyse if repo passed via URL
