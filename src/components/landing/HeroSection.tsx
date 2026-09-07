@@ -98,10 +98,10 @@ export default function HeroSection() {
             <div className="p-6 space-y-3">
               {[
                 { type: 'FEATURE', msg: 'feat: improve Server Component parsing', color: 'text-green-400 bg-green-400/10' },
-                { type: 'FIX',     msg: 'fix: memory leak in useEffect cleanup', color: 'text-red-400 bg-red-400/10'     },
-                { type: 'FEATURE', msg: 'feat: add hydration markers API',        color: 'text-green-400 bg-green-400/10' },
-                { type: 'REFACTOR',msg: 'refactor: unify rollup build configs',   color: 'text-violet-400 bg-violet-400/10'},
-                { type: 'FIX',     msg: 'fix: Suspense boundary mismatch',        color: 'text-red-400 bg-red-400/10'     },
+                { type: 'FIX', msg: 'fix: memory leak in useEffect cleanup', color: 'text-red-400 bg-red-400/10' },
+                { type: 'FEATURE', msg: 'feat: add hydration markers API', color: 'text-green-400 bg-green-400/10' },
+                { type: 'REFACTOR', msg: 'refactor: unify rollup build configs', color: 'text-violet-400 bg-violet-400/10' },
+                { type: 'FIX', msg: 'fix: Suspense boundary mismatch', color: 'text-red-400 bg-red-400/10' },
               ].map((item, i) => (
                 <motion.div
                   key={i}

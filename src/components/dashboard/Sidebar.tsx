@@ -9,8 +9,8 @@ interface Props {
 
 const VIEWS: { key: ViewType; icon: typeof GitBranch; label: string }[] = [
   { key: 'narrative', icon: GitBranch, label: 'Narrative' },
-  { key: 'timeline',  icon: FileText,  label: 'Timeline'  },
-  { key: 'authors',   icon: User,      label: 'Authors'   },
+  { key: 'timeline', icon: FileText, label: 'Timeline' },
+  { key: 'authors', icon: User, label: 'Authors' },
 ];
 
 export default function Sidebar({ activeView, setActiveView }: Props) {

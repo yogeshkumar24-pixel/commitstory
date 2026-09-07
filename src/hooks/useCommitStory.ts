@@ -43,7 +43,7 @@ export function useCommitStory() {
 
     const repoName = `${parsed.owner}/${parsed.repo}`;
 
-    // Reset + start loading commits
+    // reset everything and kick off the commit fetch
     setState(s => ({
       ...s,
       repoName,
@@ -77,7 +77,7 @@ export function useCommitStory() {
       return;
     }
 
-    // Generate all three narratives in parallel
+    // fetch the three narrative formats (staggered, not truly parallel — see api.ts)
     try {
       const narratives = await fetchAllNarratives(commits, repoName);
       setState(s => ({

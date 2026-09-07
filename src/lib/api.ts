@@ -38,6 +38,8 @@ export async function fetchSummary(
   return handleResponse<SummaryResponse>(res);
 }
 
+// Groq rate-limits aggressively per key, so these run one after another with a
+// short gap instead of Promise.all — slower, but avoids 429s on the demo repos.
 export async function fetchAllNarratives(
   commits: Commit[],
   repoName?: string

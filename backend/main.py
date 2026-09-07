@@ -30,7 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─── Noise filter ────────────────────────────────────────────────────────────
+# Noise filtering
 
 NOISE_PATTERNS = [
     "merge branch", "merge pull request", "merged pr",
@@ -43,7 +43,7 @@ def is_noise(message: str) -> bool:
     lower = message.lower().strip()
     return any(pattern in lower for pattern in NOISE_PATTERNS)
 
-# ─── Commit classifier ───────────────────────────────────────────────────────
+# Commit type classification
 
 CONVENTIONAL_RE = re.compile(
     r"^(feat|fix|refactor|chore|docs|test|perf|ci|build|style)(\(.+\))?(!)?:",
@@ -56,20 +56,40 @@ LABEL_MAP = {
     "test": "OTHER", "ci": "OTHER", "build": "OTHER", "style": "OTHER",
 }
 
+# Keyword sets for heuristic classification
+_FEATURE_STARTS = (
+    "add ", "adds ", "implement", "introduce", "new ",
+    "support", "supports", "update", "updates", "upgrade",
+    "improve", "improves", "improve", "enhance", "enhances",
+    "enable", "enables", "expose", "exposes", "create", "creates",
+    "build", "builds", "ship", "ships",
+)
+_FIX_STARTS = (
+    "fix", "fixes", "resolve", "resolves", "patch",
+    "correct", "corrects", "repair", "repairs",
+    "handle", "handles", "prevent", "prevents", "avoid", "avoids",
+    "revert", "reverts", "hotfix", "bugfix",
+)
+_REFACTOR_STARTS = (
+    "refactor", "restructure", "reorganize", "simplify",
+    "cleanup", "clean up", "extract", "move", "rename",
+    "dedup", "deduplicate", "consolidate", "migrate",
+)
+
 def classify_commit(message: str) -> str:
     match = CONVENTIONAL_RE.match(message)
     if match:
         return LABEL_MAP.get(match.group(1).lower(), "OTHER")
     lower = message.lower()
-    if lower.startswith(("add ", "implement", "introduce", "new ")):
+    if any(lower.startswith(kw) for kw in _FEATURE_STARTS):
         return "FEATURE"
-    if lower.startswith(("fix", "resolve", "patch", "correct", "repair")):
+    if any(lower.startswith(kw) for kw in _FIX_STARTS):
         return "FIX"
-    if lower.startswith(("refactor", "restructure", "reorganize", "simplify")):
+    if any(lower.startswith(kw) for kw in _REFACTOR_STARTS):
         return "REFACTOR"
     return "OTHER"
 
-# ─── Format prompts ──────────────────────────────────────────────────────────
+# AI prompt templates per output format
 
 FORMAT_PROMPTS = {
     "release_notes": """You are a technical writer. Generate professional release notes from the commit history below.
@@ -134,15 +154,11 @@ Rules:
 - Sound like a senior engineer, not a resume template""",
 }
 
-# ─── GitHub helpers ──────────────────────────────────────────────────────────
-
 def github_headers() -> dict:
     h = {"Accept": "application/vnd.github.v3+json"}
     if GITHUB_TOKEN:
         h["Authorization"] = f"Bearer {GITHUB_TOKEN}"
     return h
-
-# ─── Routes ─────────────────────────────────────────────────────────────────
 
 @app.get("/")
 def home():
@@ -247,7 +263,7 @@ Commit history ({len(commits)} commits):
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user",   "content": user_message},

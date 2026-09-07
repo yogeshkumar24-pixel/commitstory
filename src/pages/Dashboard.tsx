@@ -11,10 +11,10 @@ import { useCommitStory } from '../hooks/useCommitStory';
 import { Commit, CommitType, ViewType } from '../types';
 
 const TYPE_COLORS: Record<CommitType, { bg: string; text: string; dot: string }> = {
-  FEATURE:  { bg: 'bg-green-50',  text: 'text-green-700',  dot: 'bg-green-500'  },
-  FIX:      { bg: 'bg-red-50',    text: 'text-red-700',    dot: 'bg-red-500'    },
+  FEATURE: { bg: 'bg-green-50', text: 'text-green-700', dot: 'bg-green-500' },
+  FIX: { bg: 'bg-red-50', text: 'text-red-700', dot: 'bg-red-500' },
   REFACTOR: { bg: 'bg-violet-50', text: 'text-violet-700', dot: 'bg-violet-500' },
-  OTHER:    { bg: 'bg-slate-50',  text: 'text-slate-600',  dot: 'bg-slate-400'  },
+  OTHER: { bg: 'bg-slate-50', text: 'text-slate-600', dot: 'bg-slate-400' },
 };
 
 export default function Dashboard() {
@@ -30,7 +30,7 @@ export default function Dashboard() {
     repoName, analyse,
   } = useCommitStory();
 
-  // Auto-analyse if repo passed via URL
+  // pre-fill from ?repo= if someone lands here from a shared link
   useEffect(() => {
     if (initialRepo) analyse(initialRepo);
   }, []);
@@ -38,7 +38,6 @@ export default function Dashboard() {
   const hasData = commitStatus === 'done' || commits.length > 0;
   const isLoading = commitStatus === 'loading' || narrativeStatus === 'loading';
 
-  // Grouped commits
   const grouped = commits.reduce<Record<CommitType, Commit[]>>(
     (acc, c) => { acc[c.type].push(c); return acc; },
     { FEATURE: [], FIX: [], REFACTOR: [], OTHER: [] }
@@ -49,7 +48,6 @@ export default function Dashboard() {
       ? grouped
       : { [activeFilter as CommitType]: grouped[activeFilter as CommitType] ?? [] };
 
-  // Timeline sorted by date
   const timeline = [...commits].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -72,7 +70,6 @@ export default function Dashboard() {
         />
 
         <div className="flex-1 overflow-y-auto p-8">
-          {/* Error banner */}
           {commitError && (
             <div className="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-700 text-sm">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -80,7 +77,6 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* Commit fetch spinner */}
           {commitStatus === 'loading' && (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="w-10 h-10 border-4 border-[#06B6D4]/20 border-t-[#06B6D4] rounded-full animate-spin" />
@@ -94,7 +90,6 @@ export default function Dashboard() {
 
           {hasData && commitStatus !== 'loading' && (
             <div className="max-w-4xl mx-auto space-y-8">
-              {/* Header */}
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">{repoName}</h1>
                 <p className="text-sm font-mono text-[#64748B] mt-1">
@@ -103,17 +98,14 @@ export default function Dashboard() {
                 <div className="h-px bg-[#E2E8F0] mt-4" />
               </div>
 
-              {/* Stats */}
               {stats && <StatsRow stats={stats} />}
 
-              {/* Filter pills */}
               <FilterPills
                 activeFilter={activeFilter}
                 setActiveFilter={setActiveFilter}
                 stats={stats}
               />
 
-              {/* ── Narrative view ──────────────────────────────── */}
               {activeView === 'narrative' && (
                 <div className="space-y-4">
                   {(Object.entries(visibleGroups) as [CommitType, Commit[]][])
@@ -149,7 +141,6 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* ── Timeline view ────────────────────────────────── */}
               {activeView === 'timeline' && (
                 <div className="relative pl-6">
                   <div className="absolute left-2 top-0 bottom-0 w-px bg-[#E2E8F0]" />
@@ -184,7 +175,6 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* ── Authors view ─────────────────────────────────── */}
               {activeView === 'authors' && (
                 <div className="space-y-3">
                   {contributors.length === 0 && (

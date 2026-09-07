@@ -7,16 +7,16 @@ interface FilterPillsProps {
 }
 
 const FILTERS = [
-  { label: 'All',      key: 'ALL',      statKey: 'total'    },
-  { label: 'Features', key: 'FEATURE',  statKey: 'features' },
-  { label: 'Fixes',    key: 'FIX',      statKey: 'fixes'    },
-  { label: 'Refactors',key: 'REFACTOR', statKey: 'refactors'},
+  { label: 'All', key: 'ALL', statKey: 'total' },
+  { label: 'Features', key: 'FEATURE', statKey: 'features' },
+  { label: 'Fixes', key: 'FIX', statKey: 'fixes' },
+  { label: 'Refactors', key: 'REFACTOR', statKey: 'refactors' },
 ] as const;
 
 const ACTIVE_COLORS: Record<string, string> = {
-  ALL:      'bg-[#0F172A] text-white border-[#0F172A]',
-  FEATURE:  'bg-green-600 text-white border-green-600',
-  FIX:      'bg-red-500 text-white border-red-500',
+  ALL: 'bg-[#0F172A] text-white border-[#0F172A]',
+  FEATURE: 'bg-green-600 text-white border-green-600',
+  FIX: 'bg-red-500 text-white border-red-500',
   REFACTOR: 'bg-violet-600 text-white border-violet-600',
 };
 
